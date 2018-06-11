@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 
 import styles from './App.css';
-import Person from './Person/Person';
+import Person from '../components/Persons/Person';
+import PersonList from '../components/Persons/PersonList';
+import Cockpit from '../components/Cockpit';
 
 class App extends Component {
   state = {
@@ -37,38 +39,21 @@ class App extends Component {
 
   render() {
     const { showPersons, persons } = this.state;
-    let btnStyles = '';
-
-    const classes = [];
-    if (persons.length <= 2) {
-      classes.push(styles.red);
-    }
-    if (persons.length <= 1) {
-      classes.push(styles.bold);
-    }
-
-    btnStyles = styles.Red;
 
     return (
       <div className={styles.App}>
-        <h1>Hi, I'm a React App</h1>
-        <p className={classes.join(' ')}>This is really working!</p>
-        <button className={btnStyles} onClick={this.togglePersonsHandler}>
-          Toggle Persons
-        </button>
+        <Cockpit
+          persons={persons}
+          showPersons={this.state.showPersons}
+          clicked={this.togglePersonsHandler}
+        />
         {showPersons && (
           <div>
-            {persons.map((person, index) => (
-              return (
-                <Person
-                    key={person.id}
-                    name={person.name}
-                    age={person.age}
-                    click={() => this.handleDeletePerson(index)}
-                    change={event => this.handleChangeName(event, person.id)}
-                  />
-              );
-            ))}
+            <PersonList
+              persons={persons}
+              clicked={this.handleDeletePerson}
+              changed={this.handleChangeName}
+            />
           </div>
         )}
       </div>
