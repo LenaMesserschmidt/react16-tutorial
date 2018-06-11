@@ -3,10 +3,10 @@ import styles from './Cockpit.css';
 
 const cockpit = props => {
   const { persons, showPersons } = props;
-  let btnStyles = '';
+  let btnStyles = [styles.Button];
 
   if (showPersons) {
-    btnStyles = styles.Red;
+    btnStyles.push(styles.Red);
   }
 
   const classes = [];
@@ -21,7 +21,7 @@ const cockpit = props => {
     <div className={classes.Cockpit}>
       <h1>{props.title}</h1>
       <p className={classes.join(' ')}>This is really working!</p>
-      <button className={btnStyles} onClick={props.clicked}>
+      <button className={btnStyles.join(' ')} onClick={props.clicked}>
         Toggle Persons
       </button>
     </div>
