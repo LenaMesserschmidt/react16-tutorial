@@ -1,19 +1,56 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import styles from './App.css';
-import Person from '../components/Persons/Person';
 import PersonList from '../components/Persons/PersonList';
 import Cockpit from '../components/Cockpit';
 
-class App extends Component {
+class App extends PureComponent {
+  constructor(props) {
+    super(props);
+    console.log('[App.js] Inside Constructor', props);
+  }
+
+  componentWillMount() {
+    console.log('[App.js] Inside componentWillMount()');
+  }
+
+  componentDidMount() {
+    console.log('[App.js] Inside componentDidMount()');
+  }
+
+  // This check is automatically performed by PureComponent
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log(
+  //     '[UPDATE App.js] Inside shouldComponentUpdate',
+  //     nextProps,
+  //     nextState,
+  //   );
+  //   return (
+  //     nextState.persons !== this.state.persons ||
+  //     nextState.showPersons !== this.state.showPersons
+  //   );
+  // }
+
+  componentWillUpdate(nextProps, nextState) {
+    console.log(
+      'UPDATE [App.js] Inside componentWillUpdate',
+      nextProps,
+      nextState,
+    );
+  }
+
+  componentDidUpdate() {
+    console.log('UPDATE [App.js] Inside componentDidUpdate');
+  }
+
   state = {
     persons: [
       { id: '1', name: 'Max', age: 28 },
       { id: '2', name: 'Manu', age: 29 },
-      { id: '3', name: 'Stephanie', age: 26 }
+      { id: '3', name: 'Stephanie', age: 26 },
     ],
     otherState: 'someOtherValue',
-    showPersons: false
+    showPersons: false,
   };
 
   handleChangeName = (event, id) => {
@@ -33,16 +70,26 @@ class App extends Component {
 
   togglePersonsHandler = () => {
     this.setState({
-      showPersons: !this.state.showPersons
+      showPersons: !this.state.showPersons,
     });
   };
 
   render() {
     const { showPersons, persons } = this.state;
 
+    console.log('[App.js] Inside render()');
+
     return (
       <div className={styles.App}>
+        <button
+          onClick={() => {
+            this.setState({ showPersons: true });
+          }}
+        >
+          Show People
+        </button>
         <Cockpit
+          title={this.props.title}
           persons={persons}
           showPersons={this.state.showPersons}
           clicked={this.togglePersonsHandler}
