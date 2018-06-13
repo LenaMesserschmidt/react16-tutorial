@@ -3,6 +3,10 @@ import React, { PureComponent } from 'react';
 import styles from './App.css';
 import PersonList from '../components/Persons/PersonList';
 import Cockpit from '../components/Cockpit';
+import Aux from '../hoc/Aux';
+import withClass from '../hoc/withClassHoc';
+
+export const AuthContext = React.createContext(false);
 
 class App extends PureComponent {
   constructor(props) {
@@ -39,6 +43,18 @@ class App extends PureComponent {
     );
   }
 
+  getDerivedStateFromProps(nextProps, prevState) {
+    console.log(
+      '[UPDATE App.js] Inside getDerivedStateFromProps',
+      nextProps,
+      prevState,
+    );
+  }
+
+  getSnapshotBeforeUpdate() {
+    console.log('[UPDATE App.js] Inside getSnapshotBeforeUpdate');
+  }
+
   componentDidUpdate() {
     console.log('UPDATE [App.js] Inside componentDidUpdate');
   }
@@ -49,8 +65,9 @@ class App extends PureComponent {
       { id: '2', name: 'Manu', age: 29 },
       { id: '3', name: 'Stephanie', age: 26 },
     ],
-    otherState: 'someOtherValue',
+    toggleClicked: 0,
     showPersons: false,
+    authenticated: false,
   };
 
   handleChangeName = (event, id) => {
@@ -69,9 +86,17 @@ class App extends PureComponent {
   };
 
   togglePersonsHandler = () => {
-    this.setState({
-      showPersons: !this.state.showPersons,
+    const doesShow = this.state.showPersons;
+    this.setState((prevState, props) => {
+      return {
+        showPersons: !this.state.showPersons,
+        toggleClicked: prevState.toggleClicked + 1,
+      };
     });
+  };
+
+  loginHandler = () => {
+    this.setState({ authenticated: true });
   };
 
   render() {
@@ -80,7 +105,7 @@ class App extends PureComponent {
     console.log('[App.js] Inside render()');
 
     return (
-      <div className={styles.App}>
+      <Aux classes={styles.App}>
         <button
           onClick={() => {
             this.setState({ showPersons: true });
@@ -93,19 +118,22 @@ class App extends PureComponent {
           persons={persons}
           showPersons={this.state.showPersons}
           clicked={this.togglePersonsHandler}
+          login={this.loginHandler}
         />
-        {showPersons && (
-          <div>
-            <PersonList
-              persons={persons}
-              clicked={this.handleDeletePerson}
-              changed={this.handleChangeName}
-            />
-          </div>
-        )}
-      </div>
+        <AuthContext.Provider value={this.state.authenticated}>
+          {showPersons && (
+            <div>
+              <PersonList
+                persons={persons}
+                clicked={this.handleDeletePerson}
+                changed={this.handleChangeName}
+              />
+            </div>
+          )}
+        </AuthContext.Provider>
+      </Aux>
     );
   }
 }
 
-export default App;
+export default withClass(App, styles.App);

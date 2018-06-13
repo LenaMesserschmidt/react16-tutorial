@@ -6,6 +6,7 @@ class PersonList extends React.Component {
   constructor(props) {
     super(props);
     console.log('[PersonList.js] Inside Constructor', props);
+    this.lastPersonRef = React.createRef();
   }
 
   componentWillMount() {
@@ -55,6 +56,7 @@ class PersonList extends React.Component {
         key={person.id}
         name={person.name}
         age={person.age}
+        ref={this.lastPersonRef}
         click={() => this.props.clicked(index)}
         changed={event => this.props.changed(event, person.id)}
       />
